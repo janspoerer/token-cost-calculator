@@ -165,10 +165,15 @@ fi
 echo ""
 echo "🚀 Starting container: $CONTAINER_NAME on port $PORT"
 
+NETWORK_FLAG=""
+if docker network inspect deployment_default &>/dev/null; then
+    NETWORK_FLAG="--network deployment_default"
+fi
+
 docker run -d \
     --name "$CONTAINER_NAME" \
     --restart unless-stopped \
-    --network deployment_default \
+    $NETWORK_FLAG \
     -p "$PORT:8080" \
     -e APP_ENV="$ENVIRONMENT" \
     -m 512m \

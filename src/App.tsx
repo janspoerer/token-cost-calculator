@@ -361,10 +361,14 @@ function SliderInput({
   max: number
   step: number
 }) {
-  const tickCount = Math.min(Math.floor((max - min) / step), 20)
+  const totalSteps = Math.round((max - min) / step)
+  const tickInterval = Math.max(1, Math.ceil(totalSteps / 10))
   const ticks: number[] = []
-  for (let i = 0; i <= tickCount; i++) {
-    ticks.push(min + i * ((max - min) / tickCount))
+  for (let i = 0; i <= totalSteps; i += tickInterval) {
+    ticks.push(min + i * step)
+  }
+  if (ticks[ticks.length - 1] !== max) {
+    ticks.push(max)
   }
 
   return (
