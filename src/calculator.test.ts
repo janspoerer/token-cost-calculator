@@ -135,4 +135,27 @@ describe('calculateCosts', () => {
 
     expect(result.daily).toBe(0)
   })
+
+  it('reasoning multiplier doubles output cost', () => {
+    const base = calculateCosts(baseInputs)
+    const withReasoning = calculateCosts({ ...baseInputs, reasoningMultiplier: 2 })
+
+    expect(withReasoning.costOutput).toBeCloseTo(base.costOutput * 2)
+    // Input costs should be unchanged
+    expect(withReasoning.costUncachedInput).toBeCloseTo(base.costUncachedInput)
+  })
+
+  it('reasoning multiplier of 3 triples output cost', () => {
+    const base = calculateCosts(baseInputs)
+    const withReasoning = calculateCosts({ ...baseInputs, reasoningMultiplier: 3 })
+
+    expect(withReasoning.costOutput).toBeCloseTo(base.costOutput * 3)
+  })
+
+  it('defaults reasoning multiplier to 1 when omitted', () => {
+    const withoutMultiplier = calculateCosts(baseInputs)
+    const withMultiplier1 = calculateCosts({ ...baseInputs, reasoningMultiplier: 1 })
+
+    expect(withoutMultiplier.daily).toBe(withMultiplier1.daily)
+  })
 })

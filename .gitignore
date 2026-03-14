@@ -213,3 +213,6 @@ dist/
 
 # macOS
 .DS_Store
+
+# Override Python gitignore for src/lib
+!src/lib/

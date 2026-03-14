@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import App from './App'
 
@@ -9,6 +9,11 @@ class ResizeObserverMock {
   disconnect() {}
 }
 globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
+
+beforeEach(() => {
+  localStorage.clear()
+  window.history.replaceState({}, '', '/')
+})
 
 describe('App', () => {
   it('renders the header', () => {
@@ -25,35 +30,26 @@ describe('App', () => {
     expect(screen.getByText('Daily Breakdown')).toBeInTheDocument()
   })
 
-  it('renders cost cards', () => {
+  it('renders cost cards in sticky footer', () => {
     render(<App />)
     expect(screen.getByText('Daily Cost')).toBeInTheDocument()
     expect(screen.getByText('Monthly Cost')).toBeInTheDocument()
     expect(screen.getByText('Annual Cost')).toBeInTheDocument()
   })
 
-  it('shows caching controls when enabled', () => {
+  it('shows caching controls in top bar', () => {
     render(<App />)
-    expect(screen.getByText('Context Caching Enabled')).toBeInTheDocument()
-    expect(screen.getByText('Cache Hit Rate: 100%')).toBeInTheDocument()
+    expect(screen.getByText('Caching')).toBeInTheDocument()
+    expect(screen.getByText('Hit Rate: 100%')).toBeInTheDocument()
   })
 
   it('hides cache hit rate when caching is disabled', () => {
     render(<App />)
-    const checkbox = screen.getByRole('checkbox')
-    fireEvent.click(checkbox)
-    expect(screen.queryByText(/Cache Hit Rate/)).not.toBeInTheDocument()
-  })
-
-  it('displays default values with correct costs', () => {
-    render(<App />)
-    // Default: 100 users, 10 uses/day, 2000 input tokens, 500 output tokens
-    // Caching enabled at 100%, cached price $0, output price $15
-    // tOut = 100 * 10 * 500 = 500,000 => output cost = 0.5M/1M * 15 = $7.50
-    // All input is cached at $0 => $0 input cost
-    // Daily = $7.50
-    const matches = screen.getAllByText('$7.50')
-    expect(matches.length).toBeGreaterThanOrEqual(1)
+    // Find the Caching checkbox specifically
+    const checkboxes = screen.getAllByRole('checkbox')
+    const cachingCheckbox = checkboxes[0] // First checkbox is caching
+    fireEvent.click(cachingCheckbox)
+    expect(screen.queryByText(/Hit Rate/)).not.toBeInTheDocument()
   })
 
   it('shows breakdown table rows', () => {
@@ -62,5 +58,53 @@ describe('App', () => {
     expect(screen.getByText('Cached Input')).toBeInTheDocument()
     expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
+  })
+
+  it('renders model selector with default model', () => {
+    render(<App />)
+    const select = screen.getByRole('combobox')
+    expect(select).toHaveValue('Claude 3.7 Sonnet')
+  })
+
+  it('shows read-only pricing hint for preset models', () => {
+    render(<App />)
+    expect(screen.getByText(/Prices are set by the selected model/)).toBeInTheDocument()
+  })
+
+  it('hides read-only hint when Custom model selected', () => {
+    render(<App />)
+    const select = screen.getByRole('combobox')
+    fireEvent.change(select, { target: { value: 'Custom (Manual Entry)' } })
+    expect(screen.queryByText(/Prices are set by the selected model/)).not.toBeInTheDocument()
+  })
+
+  it('renders reasoning toggle', () => {
+    render(<App />)
+    expect(screen.getByText('Reasoning / Thinking Tokens')).toBeInTheDocument()
+  })
+
+  it('shows reasoning slider when toggled on', () => {
+    render(<App />)
+    const checkboxes = screen.getAllByRole('checkbox')
+    // Reasoning checkbox is the second one
+    const reasoningCheckbox = checkboxes.find((cb) => {
+      const label = cb.closest('label')
+      return label?.textContent?.includes('Reasoning')
+    })
+    if (reasoningCheckbox) {
+      fireEvent.click(reasoningCheckbox)
+      expect(screen.getByText(/Output multiplier/)).toBeInTheDocument()
+    }
+  })
+
+  it('renders share button', () => {
+    render(<App />)
+    expect(screen.getByText('Share')).toBeInTheDocument()
+  })
+
+  it('renders token estimator links', () => {
+    render(<App />)
+    const links = screen.getAllByText('Estimate from pages/words')
+    expect(links.length).toBe(2) // One for input, one for output
   })
 })

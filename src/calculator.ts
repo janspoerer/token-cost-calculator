@@ -9,6 +9,7 @@ export interface CalculatorInputs {
   cachingEnabled: boolean
   cacheHitRate: number
   agenticLoops: number
+  reasoningMultiplier?: number
 }
 
 export interface CalculatorResult {
@@ -32,10 +33,11 @@ export function calculateCosts(inputs: CalculatorInputs): CalculatorResult {
     cachingEnabled,
     cacheHitRate,
     agenticLoops,
+    reasoningMultiplier = 1,
   } = inputs
 
   const tIn = users * usesPerDay * inputTokens * agenticLoops
-  const tOut = users * usesPerDay * outputTokens * agenticLoops
+  const tOut = users * usesPerDay * outputTokens * agenticLoops * reasoningMultiplier
 
   const h = cachingEnabled ? cacheHitRate / 100 : 0
   const cachedIn = tIn * h
