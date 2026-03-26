@@ -1,33 +1,50 @@
 # AI Token Cost Calculator
 
-A React + TypeScript SPA for modeling AI inference costs. Built with Vite, styled with Tailwind CSS, and containerized with Docker.
+A web-based calculator for estimating AI API costs based on model selection, usage scale, and workflow parameters. Built with React + TypeScript, Vite, and Tailwind CSS.
+
+**Live:** https://token-cost-calculator.spoerico.com/
 
 ## Features
 
-- Configure scale (users, usage frequency), workflow (token counts, agentic loops), and model pricing
-- Toggle context caching and adjust cache hit rates to see cost impact
-- Executive dashboard with daily/monthly/annual projections and stacked bar chart
+- **Vertical wizard flow** — 4-step guided input (Model, Scale, Workflow, Results) with Next/Back navigation and Enter key support
+- **Model presets** — Pre-configured pricing for Claude, GPT-4o, o3-mini, Gemini models, plus custom manual entry
+- **Caching support** — Toggle prompt caching with configurable cache hit rate
+- **Agentic multi-turn loops** — Multiply token usage for multi-step agent workflows
+- **Reasoning/thinking tokens** — Output multiplier for models that use hidden reasoning tokens
+- **Token estimator** — Convert page/word counts to approximate token counts
+- **Sticky footer** — Daily, monthly, and annual cost summaries always visible at the bottom
+- **Shareable URLs** — Encode calculator state into a URL for sharing
+- **Persistent state** — Saves to localStorage with URL parameter override
+
+## User Flow
+
+The calculator uses a vertical step-by-step wizard:
+
+1. **Model** — Choose an AI model (or custom), toggle caching, view/edit pricing per 1M tokens
+2. **Scale** — Set number of users and uses per user per day
+3. **Workflow** — Configure input/output tokens, agentic loops, and reasoning token multiplier
+4. **Results** — View cost breakdown chart and daily cost table
+
+Users navigate with Next/Back buttons, clickable step indicators in the header, or Enter key to advance. The sticky footer shows computed costs at all times.
 
 ## Quick Start (Docker)
 
-1. **Build the image:**
-   ```bash
-   docker compose build
-   ```
+```bash
+docker compose build
+docker compose up
+```
 
-2. **Run the container:**
-   ```bash
-   docker compose up
-   ```
-
-3. **Open the app:**
-   Visit [http://localhost:8080](http://localhost:8080)
+Open [http://localhost:8080](http://localhost:8080).
 
 ## Local Development
 
 ```bash
 npm install
-npm run dev
+npm run dev       # Dev server at localhost:5173
+npm run build     # Production build to dist/
+npm test          # Run tests
 ```
 
-Then open [http://localhost:5173](http://localhost:5173).
+## Deployment
+
+Deployed to Hetzner via `deploy.sh`. See the script for details.
