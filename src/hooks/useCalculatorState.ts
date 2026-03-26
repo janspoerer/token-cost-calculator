@@ -42,6 +42,7 @@ export interface CalculatorState {
   setCachingEnabled: (v: boolean) => void
   cacheHitRate: number
   setCacheHitRate: (v: number) => void
+  modelSupportsCaching: boolean
 
   // Reasoning
   reasoningEnabled: boolean
@@ -118,6 +119,7 @@ export function useCalculatorState(): CalculatorState {
   const [reasoningMultiplier, setReasoningMultiplier] = useState(initial.reasoningMultiplier)
 
   const isCustomModel = selectedModel === CUSTOM_MODEL
+  const modelSupportsCaching = isCustomModel || (findPreset(selectedModel)?.supportsCaching ?? true)
 
   const setSelectedModel = useCallback(
     (model: string) => {
@@ -127,6 +129,9 @@ export function useCalculatorState(): CalculatorState {
         setPriceInput(preset.input)
         setPriceCached(preset.cached)
         setPriceOutput(preset.output)
+        if (!preset.supportsCaching) {
+          setCachingEnabled(false)
+        }
       }
     },
     [],
@@ -252,6 +257,7 @@ export function useCalculatorState(): CalculatorState {
     setPriceOutput,
     cachingEnabled,
     setCachingEnabled,
+    modelSupportsCaching,
     cacheHitRate,
     setCacheHitRate,
     reasoningEnabled,

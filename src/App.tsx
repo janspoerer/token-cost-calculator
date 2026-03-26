@@ -57,6 +57,7 @@ export default function App() {
               priceOutput={state.priceOutput}
               setPriceOutput={state.setPriceOutput}
               isCustomModel={state.isCustomModel}
+              modelSupportsCaching={state.modelSupportsCaching}
             />
           )}
           {step === 1 && (

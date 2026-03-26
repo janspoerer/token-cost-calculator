@@ -17,6 +17,7 @@ export function StepModel({
   priceOutput,
   setPriceOutput,
   isCustomModel,
+  modelSupportsCaching,
 }: {
   selectedModel: string
   onModelChange: (model: string) => void
@@ -24,6 +25,7 @@ export function StepModel({
   onCachingChange: (v: boolean) => void
   cacheHitRate: number
   onCacheHitRateChange: (v: number) => void
+  modelSupportsCaching: boolean
   priceInput: number
   setPriceInput: (v: number) => void
   priceCached: number
@@ -54,17 +56,23 @@ export function StepModel({
 
         {/* Caching */}
         <div className="pt-3 border-t border-slate-100 space-y-3">
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className={`flex items-center gap-2 ${modelSupportsCaching ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}>
             <input
               type="checkbox"
               checked={cachingEnabled}
               onChange={(e) => onCachingChange(e.target.checked)}
+              disabled={!modelSupportsCaching}
               className="w-4 h-4 accent-blue-600"
             />
             <span className="text-sm font-medium text-slate-700">
               Enable Caching
             </span>
           </label>
+          {!modelSupportsCaching && (
+            <p className="text-xs text-slate-400">
+              This model does not offer discounted prompt caching.
+            </p>
+          )}
 
           {cachingEnabled && (
             <div className="flex items-center gap-3 relative">

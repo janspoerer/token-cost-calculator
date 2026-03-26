@@ -213,17 +213,23 @@ export function StepResults({ costs, state }: StepResultsProps) {
                 <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
                   Caching
                 </h4>
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className={`flex items-center gap-2 ${state.modelSupportsCaching ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}>
                   <input
                     type="checkbox"
                     checked={state.cachingEnabled}
                     onChange={(e) => state.setCachingEnabled(e.target.checked)}
+                    disabled={!state.modelSupportsCaching}
                     className="w-4 h-4 accent-blue-600"
                   />
                   <span className="text-sm font-medium text-slate-700">
                     Enable Caching
                   </span>
                 </label>
+                {!state.modelSupportsCaching && (
+                  <p className="text-xs text-slate-400">
+                    This model does not offer discounted prompt caching.
+                  </p>
+                )}
                 {state.cachingEnabled && (
                   <div className="space-y-1">
                     <span className="text-sm text-slate-600">
