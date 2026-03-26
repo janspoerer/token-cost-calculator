@@ -14,22 +14,10 @@ import { BreakdownRow } from '../ui/BreakdownRow'
 export function StepResults({ costs }: { costs: CalculatorResult }) {
   const chartData = [
     {
-      name: 'Daily',
-      'Uncached Input': +costs.costUncachedInput.toFixed(2),
-      'Cached Input': +costs.costCachedInput.toFixed(2),
-      Output: +costs.costOutput.toFixed(2),
-    },
-    {
       name: 'Monthly',
       'Uncached Input': +(costs.costUncachedInput * 30).toFixed(2),
       'Cached Input': +(costs.costCachedInput * 30).toFixed(2),
       Output: +(costs.costOutput * 30).toFixed(2),
-    },
-    {
-      name: 'Annual',
-      'Uncached Input': +(costs.costUncachedInput * 365).toFixed(2),
-      'Cached Input': +(costs.costCachedInput * 365).toFixed(2),
-      Output: +(costs.costOutput * 365).toFixed(2),
     },
   ]
 
@@ -89,16 +77,16 @@ export function StepResults({ costs }: { costs: CalculatorResult }) {
       {/* Breakdown table */}
       <div className="bg-white rounded-xl border border-slate-200 p-6">
         <h3 className="text-lg font-semibold text-slate-900 mb-3">
-          Daily Breakdown
+          Monthly Breakdown
         </h3>
         <table className="w-full text-sm">
           <tbody className="divide-y divide-slate-100">
-            <BreakdownRow label="Uncached Input" value={costs.costUncachedInput} color="bg-blue-500" />
-            <BreakdownRow label="Cached Input" value={costs.costCachedInput} color="bg-cyan-400" />
-            <BreakdownRow label="Output" value={costs.costOutput} color="bg-violet-500" />
+            <BreakdownRow label="Uncached Input" value={costs.costUncachedInput * 30} color="bg-blue-500" />
+            <BreakdownRow label="Cached Input" value={costs.costCachedInput * 30} color="bg-cyan-400" />
+            <BreakdownRow label="Output" value={costs.costOutput * 30} color="bg-violet-500" />
             <tr className="font-semibold">
               <td className="py-2">Total</td>
-              <td className="py-2 text-right">{formatCurrency(costs.daily)}</td>
+              <td className="py-2 text-right">{formatCurrency(costs.monthly)}</td>
             </tr>
           </tbody>
         </table>

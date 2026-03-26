@@ -79,7 +79,7 @@ describe('App', () => {
     clickNext()
     expect(screen.getByText('Your Results')).toBeInTheDocument()
     expect(screen.getByText('Cost Breakdown')).toBeInTheDocument()
-    expect(screen.getByText('Daily Breakdown')).toBeInTheDocument()
+    expect(screen.getByText('Monthly Breakdown')).toBeInTheDocument()
     expect(screen.getByText('Uncached Input')).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
   })
