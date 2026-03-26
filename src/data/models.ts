@@ -30,9 +30,6 @@ export const MODEL_PRESETS: ModelPreset[] = [
   { provider: 'Google', model: 'Gemini 3.1 Pro (Preview)', input: 2.0, cached: 0.2, output: 12.0 },
   { provider: 'Google', model: 'Gemini 3.1 Flash-Lite (Preview)', input: 0.25, cached: 0.025, output: 1.5 },
   { provider: 'Google', model: 'Gemini 3 Flash (Preview)', input: 0.5, cached: 0.05, output: 3.0 },
-  { provider: 'Google', model: 'Gemini 2.5 Pro', input: 1.25, cached: 0.125, output: 10.0 },
-  { provider: 'Google', model: 'Gemini 2.5 Flash', input: 0.3, cached: 0.03, output: 2.5 },
-  { provider: 'Google', model: 'Gemini 2.5 Flash-Lite', input: 0.1, cached: 0.01, output: 0.4 },
   // Custom
   { provider: 'Custom', model: 'Custom (Manual Entry)', input: 0, cached: 0, output: 0 },
 ]
