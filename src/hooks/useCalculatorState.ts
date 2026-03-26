@@ -68,7 +68,7 @@ function getInitialState(): PersistedState {
     priceCached: 0.3,
     priceOutput: 15.0,
     cachingEnabled: true,
-    cacheHitRate: 100,
+    cacheHitRate: 70,
     agenticLoops: 1,
     reasoningEnabled: false,
     reasoningMultiplier: 2.0,

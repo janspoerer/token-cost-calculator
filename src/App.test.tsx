@@ -44,7 +44,7 @@ describe('App', () => {
     render(<App />)
     expect(screen.getByText('Choose a Model')).toBeInTheDocument()
     expect(screen.getByText('Enable Caching')).toBeInTheDocument()
-    expect(screen.getByText('Cache Hit Rate: 100%')).toBeInTheDocument()
+    expect(screen.getByText('Cache Hit Rate: 70%')).toBeInTheDocument()
   })
 
   it('hides cache hit rate when caching is disabled', () => {
