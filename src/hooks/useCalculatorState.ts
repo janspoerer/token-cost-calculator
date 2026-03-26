@@ -58,7 +58,7 @@ export interface CalculatorState {
 
 function getInitialState(): PersistedState {
   const defaults: PersistedState = {
-    selectedModel: 'Claude 3.7 Sonnet',
+    selectedModel: 'Claude Sonnet 4.6',
     users: 100,
     usesPerDay: 10,
     inputTokens: 2000,

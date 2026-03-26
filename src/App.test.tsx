@@ -15,19 +15,22 @@ beforeEach(() => {
   window.history.replaceState({}, '', '/')
 })
 
+function clickNext() {
+  fireEvent.click(screen.getByText('Next'))
+}
+
 describe('App', () => {
   it('renders the header', () => {
     render(<App />)
     expect(screen.getByText('AI Token Cost Calculator')).toBeInTheDocument()
   })
 
-  it('renders all section headings', () => {
+  it('renders step indicator labels', () => {
     render(<App />)
-    expect(screen.getByText('Scale')).toBeInTheDocument()
-    expect(screen.getByText('Workflow')).toBeInTheDocument()
-    expect(screen.getByText('Model Pricing (per 1M Tokens)')).toBeInTheDocument()
-    expect(screen.getByText('Cost Breakdown')).toBeInTheDocument()
-    expect(screen.getByText('Daily Breakdown')).toBeInTheDocument()
+    expect(screen.getByText('1. Model')).toBeInTheDocument()
+    expect(screen.getByText('2. Scale')).toBeInTheDocument()
+    expect(screen.getByText('3. Workflow')).toBeInTheDocument()
+    expect(screen.getByText('4. Results')).toBeInTheDocument()
   })
 
   it('renders cost cards in sticky footer', () => {
@@ -37,33 +40,62 @@ describe('App', () => {
     expect(screen.getByText('Annual Cost')).toBeInTheDocument()
   })
 
-  it('shows caching controls in top bar', () => {
+  it('shows model step with caching controls initially', () => {
     render(<App />)
-    expect(screen.getByText('Caching')).toBeInTheDocument()
-    expect(screen.getByText('Hit Rate: 100%')).toBeInTheDocument()
+    expect(screen.getByText('Choose a Model')).toBeInTheDocument()
+    expect(screen.getByText('Enable Caching')).toBeInTheDocument()
+    expect(screen.getByText('Cache Hit Rate: 100%')).toBeInTheDocument()
   })
 
   it('hides cache hit rate when caching is disabled', () => {
     render(<App />)
-    // Find the Caching checkbox specifically
     const checkboxes = screen.getAllByRole('checkbox')
-    const cachingCheckbox = checkboxes[0] // First checkbox is caching
+    const cachingCheckbox = checkboxes[0]
     fireEvent.click(cachingCheckbox)
-    expect(screen.queryByText(/Hit Rate/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Cache Hit Rate/)).not.toBeInTheDocument()
   })
 
-  it('shows breakdown table rows', () => {
+  it('navigates to scale step on Next click', () => {
     render(<App />)
+    clickNext()
+    expect(screen.getByText('Set Your Scale')).toBeInTheDocument()
+    expect(screen.getByText('Number of Users')).toBeInTheDocument()
+    expect(screen.getByText('Uses per User per Day')).toBeInTheDocument()
+  })
+
+  it('navigates to workflow step', () => {
+    render(<App />)
+    clickNext()
+    clickNext()
+    expect(screen.getByText('Define Your Workflow')).toBeInTheDocument()
+    expect(screen.getByText('Avg Input Tokens per Use')).toBeInTheDocument()
+    expect(screen.getByText('Reasoning / Thinking Tokens')).toBeInTheDocument()
+  })
+
+  it('navigates to results step', () => {
+    render(<App />)
+    clickNext()
+    clickNext()
+    clickNext()
+    expect(screen.getByText('Your Results')).toBeInTheDocument()
+    expect(screen.getByText('Cost Breakdown')).toBeInTheDocument()
+    expect(screen.getByText('Daily Breakdown')).toBeInTheDocument()
     expect(screen.getByText('Uncached Input')).toBeInTheDocument()
-    expect(screen.getByText('Cached Input')).toBeInTheDocument()
-    expect(screen.getByText('Output')).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
+  })
+
+  it('navigates back with Back button', () => {
+    render(<App />)
+    clickNext()
+    expect(screen.getByText('Set Your Scale')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Back'))
+    expect(screen.getByText('Choose a Model')).toBeInTheDocument()
   })
 
   it('renders model selector with default model', () => {
     render(<App />)
     const select = screen.getByRole('combobox')
-    expect(select).toHaveValue('Claude 3.7 Sonnet')
+    expect(select).toHaveValue('Claude Sonnet 4.6')
   })
 
   it('shows read-only pricing hint for preset models', () => {
@@ -78,15 +110,11 @@ describe('App', () => {
     expect(screen.queryByText(/Prices are set by the selected model/)).not.toBeInTheDocument()
   })
 
-  it('renders reasoning toggle', () => {
-    render(<App />)
-    expect(screen.getByText('Reasoning / Thinking Tokens')).toBeInTheDocument()
-  })
-
   it('shows reasoning slider when toggled on', () => {
     render(<App />)
+    clickNext()
+    clickNext()
     const checkboxes = screen.getAllByRole('checkbox')
-    // Reasoning checkbox is the second one
     const reasoningCheckbox = checkboxes.find((cb) => {
       const label = cb.closest('label')
       return label?.textContent?.includes('Reasoning')
@@ -102,9 +130,25 @@ describe('App', () => {
     expect(screen.getByText('Share')).toBeInTheDocument()
   })
 
-  it('renders token estimator links', () => {
+  it('renders token estimator links on workflow step', () => {
     render(<App />)
+    clickNext()
+    clickNext()
     const links = screen.getAllByText('Estimate from pages/words')
-    expect(links.length).toBe(2) // One for input, one for output
+    expect(links.length).toBe(2)
+  })
+
+  it('shows Start Over button on results step', () => {
+    render(<App />)
+    clickNext()
+    clickNext()
+    clickNext()
+    expect(screen.getByText('Start Over')).toBeInTheDocument()
+  })
+
+  it('allows clicking step indicators to jump to a step', () => {
+    render(<App />)
+    fireEvent.click(screen.getByText('3. Workflow'))
+    expect(screen.getByText('Define Your Workflow')).toBeInTheDocument()
   })
 })
