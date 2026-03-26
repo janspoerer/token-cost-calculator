@@ -81,7 +81,7 @@ export default function App() {
               setReasoningMultiplier={state.setReasoningMultiplier}
             />
           )}
-          {step === 3 && <StepResults costs={state.costs} />}
+          {step === 3 && <StepResults costs={state.costs} state={state} />}
 
           {/* Navigation */}
           <div className="flex justify-between mt-8">
